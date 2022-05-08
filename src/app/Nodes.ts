@@ -12,7 +12,7 @@ export class PlusNode extends BinaryOperationNode{
 }
 export class MinusNode extends BinaryOperationNode{
     evaluate(): number {
-        return this.left.evaluate() - this.right.evaluate();
+        return parseFloat((this.left.evaluate() - this.right.evaluate()).toFixed(10));
     }
 }
 export class NumberNode extends MyNode{
