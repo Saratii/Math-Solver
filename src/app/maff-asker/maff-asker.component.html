@@ -1,0 +1,13 @@
+<div class="askerBox">
+    <form (ngSubmit)="calculate()">
+        <div style="margin: 0 auto; width: 70%;">
+            <input type="textArea" style="width: 100%;" [(ngModel)]="askerBox" name="askerBox">
+        </div>
+        <div *ngFor="let token of tokens">
+            {{token | json}} : {{token.toString()}}
+        </div>
+        <div>
+            value: {{value}}
+        </div>
+    </form>
+</div>
