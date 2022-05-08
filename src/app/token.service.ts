@@ -15,7 +15,9 @@ export class TokenService {
                 s = s.substring(1);
             } else if(/^\-?[0-9]+(\.[0-9]+)?/.test(s)){
                 let nextNum = (s.match(/^\-?[0-9]+(\.[0-9]+)?/)||[])[0];
-                tokenlist.push(new NumberToken(parseInt(nextNum)));
+                let results = (s.match(/^\-?[0-9]+(\.[0-9]+)?/));
+                console.log(results);
+                tokenlist.push(new NumberToken(parseFloat(nextNum)));
                 s = s.substring(nextNum.length);
             } else if(/^\+/.test(s)){
                 tokenlist.push(new PlusToken());

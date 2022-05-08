@@ -18,6 +18,8 @@ export class PlusToken extends Token{
     public toString(): string {
         return "+";
     }
+    operation: string = "+";
+
 
 }
 
@@ -25,5 +27,6 @@ export class MinusToken extends Token{
     public toString(): string {
         return "-";
     }
+    operation: string = "-";
 
 }
