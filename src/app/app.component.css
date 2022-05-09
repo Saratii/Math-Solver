@@ -20,6 +20,13 @@
   margin-right: 20%;
   /* margin: 0;
   padding: 0; */
-  height: 60px;
+  height: auto;
+  width: auto;
   vertical-align: middle;
+  padding: 10px 0;
+}
+
+.title p{
+  padding: 0;
+  margin: 20px 0;
 }
