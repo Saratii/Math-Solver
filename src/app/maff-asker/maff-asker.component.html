@@ -4,10 +4,13 @@
             <input type="textArea" autocomplete="off" style="outline-style: none; width: 100%; font-size: 60px; border-color: aqua; background-color:rgb(20, 0, 153); border-style: solid; border-radius: 50px; text-indent: 30px; border-width: 6px; margin-top: 8%; margin-bottom: 6%; color: aqua;" [(ngModel)]="askerBox" name="askerBox">
         </div>
         <div style="font-size: 40px; color:aqua; margin-left: 55%; background-color: black; margin-top: 1%;">
-            Value: {{value}}
+            Value: {{value === undefined ? "undefined": value}}
         </div>
         <div *ngFor="let token of tokens" style="font-size: 40px; height: 60px; margin-top: -1.5%; color: aqua; margin-left: 10%; margin-bottom: 2%;">
             {{token | json}} : {{token.toString()}}
+        </div>
+        <div *ngIf="AST">
+            {{AST|json}}: {{AST.display()}}
         </div>
     </form>
 </div>
