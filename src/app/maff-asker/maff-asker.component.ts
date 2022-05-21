@@ -13,7 +13,7 @@ export class MaffAskerComponent implements OnInit {
   askerBox = "";
   tokens: Token[] = [];
   AST!: MyNode;
-  value!: number;
+  value?: string = "";
 
   constructor(private tokenService: TokenService) { }
 
@@ -22,6 +22,7 @@ export class MaffAskerComponent implements OnInit {
   calculate(): void {
     this.tokens = this.tokenService.tokenize(this.askerBox);
     this.AST = this.tokenService.lex(this.tokens);
-    this.value = this.AST.evaluate();
+    console.log(this.AST);
+    this.value = this.AST.evaluate() + "";
   }
 }
