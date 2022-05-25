@@ -27,14 +27,20 @@ export class MinusToken extends Token{
 }
 export class MultiplyToken extends Token{
     public toString(): string {
-        return "⋅"
+        return "⋅";
     }
-    operation: string = "⋅"
+    operation: string = "⋅";
 }
 export class DivisionToken extends Token{
     public toString(): string {
-        return "/"
+        return "/";
     }
-    operation: string = "/"
+    operation: string = "/";
+}
+export class NegativeToken extends Token{
+    public toString(): string {
+        return "neg";
+    }
+    operation: string = "neg";
 }
 

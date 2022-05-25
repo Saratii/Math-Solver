@@ -21,6 +21,7 @@ export class MaffAskerComponent implements OnInit {
   }
   calculate(): void {
     this.tokens = this.tokenService.tokenize(this.askerBox);
+    console.log(this.tokens);
     this.AST = this.tokenService.lex(this.tokens);
     console.log(this.AST);
     this.value = this.AST.evaluate() + "";
