@@ -43,4 +43,16 @@ export class NegativeToken extends Token{
     }
     operation: string = "neg";
 }
+export class LeftParenthesisToken extends Token{
+    public toString(): string {
+        return "("
+    }
+    operation: string = "(";
+}
+export class RightParenthesisToken extends Token{
+    public toString(): string {
+        return ")"
+    }
+    operation: string = ")";
+}
 

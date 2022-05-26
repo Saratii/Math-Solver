@@ -103,3 +103,30 @@ export class NegativeNode extends UnaryOperationNode{
         return "neg(" + this.child?.display() + ")";
     }
 }
+export class UnMatchedParenthesisNode extends MyNode{
+    priority: number = 0;
+    evaluate(): number | undefined {
+        return undefined;
+    }
+    display(): string {
+        return "(";
+    }
+}
+export class ParenthesisNode extends UnaryOperationNode{
+    priority = 0;
+    evaluate(): number | undefined{
+        return this.child?.evaluate(); 
+    }
+    display(): string{
+        return "(" + this.child?.display() + ")";
+    }
+}
+export class ErrorNode extends MyNode{
+    priority = 420;
+    evaluate(): number | undefined {
+        return undefined;
+    }
+    display(): string{
+        return "Error write it correctly";
+    }
+}

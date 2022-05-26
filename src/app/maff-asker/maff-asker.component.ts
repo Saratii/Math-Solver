@@ -25,5 +25,8 @@ export class MaffAskerComponent implements OnInit {
     this.AST = this.tokenService.lex(this.tokens);
     console.log(this.AST);
     this.value = this.AST.evaluate() + "";
+    if(this.value === "undefined"){
+      this.value = "Learn how to type";
+    }
   }
 }
