@@ -6,7 +6,7 @@ import { DivisionToken, LeftParenthesisToken, MinusToken, MultiplyToken, Negativ
   providedIn: 'root'
 })
 export class TokenService {
-    constructor() { }
+    constructor() {}
     tokenize(s:string): Token[] {
         let tokenlist = [];
         while(s){
