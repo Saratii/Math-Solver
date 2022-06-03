@@ -19,6 +19,9 @@ export class TokenService {
                 s = s.substring(1);
             } else if(/^\-?[0-9]+(\.[0-9]+)?/.test(s)){
                 let nextNum = (s.match(/^\-?[0-9]+(\.[0-9]+)?/)||[])[0];
+                if(this.peek(tokenlist) instanceof RightParenthesisToken){
+                    tokenlist.push(new MultiplyToken())
+                }
                 tokenlist.push(new NumberToken(parseFloat(nextNum)));
                 s = s.substring(nextNum.length);
             } else if(/^\+/.test(s)){
@@ -31,6 +34,9 @@ export class TokenService {
                 tokenlist.push(new DivisionToken());
                 s = s.substring(1);
             } else if(/^\(/.test(s)){
+                if(this.peek(tokenlist) as any instanceof RightParenthesisToken || this.peek(tokenlist) as any instanceof NumberToken){
+                    tokenlist.push(new MultiplyToken())
+                }
                 tokenlist.push(new LeftParenthesisToken());
                 s = s.substring(1)
             } else if(/^\)/.test(s)){
@@ -48,15 +54,6 @@ export class TokenService {
         let unusedNodes: MyNode[] = [];
         for(let token of tokens){
             if(token as any instanceof NumberToken){
-                if(unusedNodes.length>0){
-                    let mostRecentNode:MyNode = unusedNodes.pop() as MyNode;
-                    if(mostRecentNode instanceof ParenthesisNode){
-                        unusedNodes.push(mostRecentNode);
-                        unusedNodes.push(new MultiplyNode());
-                    } else {
-                        unusedNodes.push(mostRecentNode);
-                    }
-                }
                 this.combineNodes(unusedNodes, new NumberNode((token as NumberToken).val));
             } else if(token as any instanceof MinusToken){
                 unusedNodes.push(new MinusNode());
@@ -85,15 +82,6 @@ export class TokenService {
                     let unMatchedParenthesisNode = unusedNodes.pop();
                     if(unMatchedParenthesisNode instanceof UnMatchedParenthesisNode){
                         let parenthesisNode = new ParenthesisNode(inbetweenNode);
-                        if(unusedNodes.length>0){
-                            let mostRecentNode:MyNode = unusedNodes.pop() as MyNode;
-                            if(mostRecentNode instanceof ParenthesisNode){
-                                unusedNodes.push(mostRecentNode);
-                                unusedNodes.push(new MultiplyNode());
-                            } else {
-                                unusedNodes.push(mostRecentNode);
-                            }
-                        }
                         this.combineNodes(unusedNodes, parenthesisNode);
                     } else {
                         return new ErrorNode();
@@ -157,5 +145,8 @@ export class TokenService {
         } else {
             unusedNodes = [new ErrorNode()];
         }
+    }
+    peek<T>(list:Array<T>): T{
+        return list[list.length-1];
     }
 }
