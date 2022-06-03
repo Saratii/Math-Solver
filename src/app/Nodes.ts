@@ -6,7 +6,7 @@ export abstract class MyNode{
 export abstract class BinaryOperationNode extends MyNode{
     left?: MyNode;
     right?: MyNode;
-    public constructor(left:MyNode | undefined, right:MyNode | undefined){
+    public constructor(left?:MyNode, right?:MyNode){
         super();
         this.left = left;
         this.right = right;
@@ -86,7 +86,7 @@ export class NumberNode extends MyNode{
 
 export abstract class UnaryOperationNode{
     child?: MyNode;
-    constructor(child:MyNode | undefined){
+    constructor(child?:MyNode){
         this.child = child;
     }
 }
@@ -104,7 +104,7 @@ export class NegativeNode extends UnaryOperationNode{
     }
 }
 export class UnMatchedParenthesisNode extends MyNode{
-    priority: number = 0;
+    priority: number = 68;
     evaluate(): number | undefined {
         return undefined;
     }
@@ -113,7 +113,7 @@ export class UnMatchedParenthesisNode extends MyNode{
     }
 }
 export class ParenthesisNode extends UnaryOperationNode{
-    priority = 0;
+    priority = 68;
     evaluate(): number | undefined{
         return this.child?.evaluate(); 
     }
