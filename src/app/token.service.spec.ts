@@ -15,35 +15,63 @@ describe('TokenService', () => {
   describe("Tokenize", () => {
     it("parses plus", () => {
       expect(service.tokenize("+")).toEqual([new PlusToken()]);
-    })
+    });
     it("parses minus", () => {
       expect(service.tokenize("-")).toEqual([new NegativeToken()]);
-    })
+    });
     it("parses multiply", () => {
       expect(service.tokenize("*")).toEqual([new MultiplyToken()]);
-    })
+    });
     it("parses divide", () => {
       expect(service.tokenize("/")).toEqual([new DivisionToken()]);
-    })
+    });
     it("parses numbers", () => {
       expect(service.tokenize("71")).toEqual([new NumberToken(71)]);
-    })
+    });
     it("parses expressions with plus", () => {
       expect(service.tokenize("3+4")).toEqual([new NumberToken(3), new PlusToken(), new NumberToken(4)]);
-    })
+    });
     it("parses expressions with minus", () => {
       expect(service.tokenize("3-4")).toEqual([new NumberToken(3), new MinusToken(), new NumberToken(4)]);
-    })
+    });
     it("parses expressions with negative", () => {
       expect(service.tokenize("-4")).toEqual([new NegativeToken(), new NumberToken(4)]);
-    })
+    });
     it("parses expressions with negative and minus", () => {
       expect(service.tokenize("1--4")).toEqual([new NumberToken(1), new MinusToken(), new NegativeToken(), new NumberToken(4)]);
-    })
+    });
     it("uses parenthesis with addition", () => {
       expect(service.tokenize("2*(1+3)")).toEqual([new NumberToken(2), new MultiplyToken(), new LeftParenthesisToken(), new NumberToken(1), new PlusToken(), new NumberToken(3), new RightParenthesisToken()]);
-    })
-  })
+    });
+    it("builds multiplication tree from parenthesis", () => {
+      let actual = service.tokenize("(1)(2)");
+      let expected = [new LeftParenthesisToken(), new NumberToken(1), new RightParenthesisToken(), new MultiplyToken(), new LeftParenthesisToken(), new NumberToken(2), new RightParenthesisToken()]
+      // console.log("actual:", actual);
+      // console.log("expect:", expected);
+      expect(actual).toEqual(expected);
+    });
+    it("builds multiplication tree with only 1 set of parenthesis", () => {
+      let actual = service.tokenize("(2)3");
+      let expected = [new LeftParenthesisToken(), new NumberToken(2), new RightParenthesisToken(), new MultiplyToken(), new NumberToken(3)]
+      // console.log("actual:", actual.display());
+      // console.log("expected:", expected.display());
+      expect(actual).toEqual(expected);
+    });
+    it("builds multiplication tree with parenthesis on the other side", () => {
+      let actual = service.tokenize("2(3)");
+      let expected = [new NumberToken(2), new MultiplyToken(), new LeftParenthesisToken(), new NumberToken(3), new RightParenthesisToken()];
+      // console.log("actual:", actual.display());
+      // console.log("expected:", expected.display());
+      expect(actual).toEqual(expected);
+    });
+    it("does (3)2(1)", () =>{
+      let actual = service.tokenize("(3)2(1)");
+      let expected = [new LeftParenthesisToken(), new NumberToken(3), new RightParenthesisToken(), new MultiplyToken(), new NumberToken(2), new MultiplyToken(), new LeftParenthesisToken(), new NumberToken(1), new RightParenthesisToken()];
+      // console.log("actual:", actual);
+      // console.log("expctd:", expected);
+      expect(actual).toEqual(expected);
+    });
+  });
   describe("Lex", () => {
     it("builds addition tree", () => {
       expect(service.lex([new NumberToken(1), new PlusToken(), new NumberToken(2)]))
@@ -85,27 +113,7 @@ describe('TokenService', () => {
       // console.log("actual:", actual.display());
       // console.log("expected:", expected.display());
       expect(actual).toEqual(expected);
-    })
-    it("builds multiplication tree from parenthesis", () => {
-      let actual = service.lex([new LeftParenthesisToken(), new NumberToken(2), new RightParenthesisToken(), new LeftParenthesisToken(), new NumberToken(3), new RightParenthesisToken()]);
-      let expected = new MultiplyNode(new ParenthesisNode(new NumberNode(2)), new ParenthesisNode(new NumberNode(3)));
-      // console.log("actual:", actual.display());
-      // console.log("expected:", expected.display());
-      expect(actual).toEqual(expected);
-    }) 
-    it("builds multiplication tree with only 1 set of parenthesis", () => {
-      let actual = service.lex([new LeftParenthesisToken(), new NumberToken(2), new RightParenthesisToken(), new NumberToken(3)]);
-      let expected = new MultiplyNode(new ParenthesisNode(new NumberNode(2)), new NumberNode(3));
-      // console.log("actual:", actual.display());
-      // console.log("expected:", expected.display());
-      expect(actual).toEqual(expected);
-    })
-    it("builds multiplication tree with parenthesis on the other side", () => {
-      let actual = service.lex([new NumberToken(2), new LeftParenthesisToken(), new NumberToken(3), new RightParenthesisToken()]);
-      let expected = new MultiplyNode(new NumberNode(2), new ParenthesisNode(new NumberNode(3)));
-      // console.log("actual:", actual.display());
-      // console.log("expected:", expected.display());
-      expect(actual).toEqual(expected);
-    })
-  })
+
+    });
+  });
 });
