@@ -48,18 +48,36 @@ export class TokenService {
         let unusedNodes: MyNode[] = [];
         for(let token of tokens){
             if(token as any instanceof NumberToken){
+                if(unusedNodes.length>0){
+                    let mostRecentNode:MyNode = unusedNodes.pop() as MyNode;
+                    if(mostRecentNode instanceof ParenthesisNode){
+                        unusedNodes.push(mostRecentNode);
+                        unusedNodes.push(new MultiplyNode());
+                    } else {
+                        unusedNodes.push(mostRecentNode);
+                    }
+                }
                 this.combineNodes(unusedNodes, new NumberNode((token as NumberToken).val));
             } else if(token as any instanceof MinusToken){
-                unusedNodes.push(new MinusNode(undefined, undefined));
+                unusedNodes.push(new MinusNode());
             } else if(token as any instanceof PlusToken){
-                unusedNodes.push(new PlusNode(undefined, undefined));
+                unusedNodes.push(new PlusNode());
             } else if(token as any instanceof MultiplyToken){
-                unusedNodes.push(new MultiplyNode(undefined, undefined));
+                unusedNodes.push(new MultiplyNode());
             } else if(token as any instanceof DivisionToken){
-                unusedNodes.push(new DivisionNode(undefined, undefined));
+                unusedNodes.push(new DivisionNode());
             } else if(token as any instanceof NegativeToken){
-                unusedNodes.push(new NegativeNode(undefined));
-            } else if(token as any instanceof LeftParenthesisToken){
+                unusedNodes.push(new NegativeNode());
+            } else if(token as any instanceof LeftParenthesisToken){    
+                if(unusedNodes.length > 0){
+                    let mostRecentNode: MyNode = unusedNodes.pop() as MyNode;
+                    if(mostRecentNode instanceof NumberNode){
+                        unusedNodes.push(mostRecentNode);
+                        unusedNodes.push(new MultiplyNode())
+                    } else {
+                        unusedNodes.push(mostRecentNode);
+                    }
+                }
                 unusedNodes.push(new UnMatchedParenthesisNode());
             } else if(token as any instanceof RightParenthesisToken){
                 if(unusedNodes.length>1){
@@ -67,6 +85,15 @@ export class TokenService {
                     let unMatchedParenthesisNode = unusedNodes.pop();
                     if(unMatchedParenthesisNode instanceof UnMatchedParenthesisNode){
                         let parenthesisNode = new ParenthesisNode(inbetweenNode);
+                        if(unusedNodes.length>0){
+                            let mostRecentNode:MyNode = unusedNodes.pop() as MyNode;
+                            if(mostRecentNode instanceof ParenthesisNode){
+                                unusedNodes.push(mostRecentNode);
+                                unusedNodes.push(new MultiplyNode());
+                            } else {
+                                unusedNodes.push(mostRecentNode);
+                            }
+                        }
                         this.combineNodes(unusedNodes, parenthesisNode);
                     } else {
                         return new ErrorNode();
