@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { DivisionNode, ExponentNode, MinusNode, MultiplyNode, NegativeNode, NumberNode, ParenthesisNode, PlusNode } from './Nodes';
+import { DivisionNode, ExponentNode, MinusNode, ModulusNode, MultiplyNode, NegativeNode, NumberNode, ParenthesisNode, PlusNode } from './Nodes';
 
 import { TokenService } from './token.service';
-import { DivisionToken, ExponentToken, LeftParenthesisToken, MinusToken, MultiplyToken, NegativeToken, NumberToken, PlusToken, RightParenthesisToken } from './Tokens';
+import { DivisionToken, ExponentToken, LeftParenthesisToken, MinusToken, ModulusToken, MultiplyToken, NegativeToken, NumberToken, PlusToken, RightParenthesisToken } from './Tokens';
 
 describe('TokenService', () => {
   let service: TokenService;
@@ -53,6 +53,9 @@ describe('TokenService', () => {
     it("parses expressions with exponent", () => {
       expect(service.tokenize("2^3")).toEqual([new NumberToken(2), new ExponentToken(), new NumberToken(3)]);
     });
+    it("parses modulus", () => {
+      expect(service.tokenize("2%1")).toEqual([new NumberToken(2), new ModulusToken(), new NumberToken(1)]);
+    })
     it("builds multiplication tree with only 1 set of parenthesis", () => {
       let actual = service.tokenize("(2)3");
       let expected = [new LeftParenthesisToken(), new NumberToken(2), new RightParenthesisToken(), new MultiplyToken(), new NumberToken(3)]
@@ -134,8 +137,15 @@ describe('TokenService', () => {
     it("does 2^(3+1) exponents", () => {
       let actual = service.lex([new NumberToken(2), new ExponentToken(), new LeftParenthesisToken(), new NumberToken(3), new PlusToken(), new NumberToken(1), new RightParenthesisToken()]);
       let expected = new ExponentNode(new NumberNode(2), new ParenthesisNode(new PlusNode(new NumberNode(3), new NumberNode(1))));
-      console.log("actual:", actual.display());
-      console.log("expected:", expected.display());
+      // console.log("actual:", actual.display());
+      // console.log("expected:", expected.display());
+      expect(actual).toEqual(expected);
+    });
+    it("does modulus", () => {
+      let actual = service.lex([new NumberToken(2), new ModulusToken(), new NumberToken(1)]);
+      let expected = new ModulusNode(new NumberNode(2), new NumberNode(1));
+      // console.log("actual:", actual.display());
+      // console.log("expected:", expected.display());
       expect(actual).toEqual(expected);
     });
   });
