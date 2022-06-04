@@ -55,4 +55,9 @@ export class RightParenthesisToken extends Token{
     }
     operation: string = ")";
 }
+export class ExponentToken extends Token{
+    public toString(): string {
+        return "^"
+    }
+}
 

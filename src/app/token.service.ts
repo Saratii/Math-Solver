@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BinaryOperationNode, DivisionNode, ErrorNode, MinusNode, MultiplyNode, MyNode, NegativeNode, NumberNode, ParenthesisNode, PlusNode, UnaryOperationNode, UnMatchedParenthesisNode } from './Nodes';
-import { DivisionToken, LeftParenthesisToken, MinusToken, MultiplyToken, NegativeToken, NumberToken, PlusToken, RightParenthesisToken, Token } from './Tokens';
+import { BinaryOperationNode, DivisionNode, ErrorNode, ExponentNode, MinusNode, MultiplyNode, MyNode, NegativeNode, NumberNode, ParenthesisNode, PlusNode, UnaryOperationNode, UnMatchedParenthesisNode } from './Nodes';
+import { DivisionToken, ExponentToken, LeftParenthesisToken, MinusToken, MultiplyToken, NegativeToken, NumberToken, PlusToken, RightParenthesisToken, Token } from './Tokens';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +41,9 @@ export class TokenService {
                 s = s.substring(1)
             } else if(/^\)/.test(s)){
                 tokenlist.push(new RightParenthesisToken());
+                s = s.substring(1)
+            } else if(/^\^/.test(s)){
+                tokenlist.push(new ExponentToken());
                 s = s.substring(1)
             } else {
                 s = s.substring(1)
@@ -89,6 +92,8 @@ export class TokenService {
                 } else {
                     return new ErrorNode();
                 }
+            } else if(token as any instanceof ExponentToken){
+                unusedNodes.push(new ExponentNode());
             }
         }
         if(unusedNodes.length != 1){
