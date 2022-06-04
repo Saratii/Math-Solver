@@ -60,4 +60,8 @@ export class ExponentToken extends Token{
         return "^"
     }
 }
-
+export class ModulusToken extends Token{
+    public toString(): string {
+        return "%"
+    }
+}
