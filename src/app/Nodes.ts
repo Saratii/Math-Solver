@@ -69,6 +69,18 @@ export class DivisionNode extends BinaryOperationNode{
         return "{" + this.left?.display() + " / " + this.right?.display() + "}";
     }
 }
+export class ExponentNode extends BinaryOperationNode{
+    priority = 4;
+    evaluate(): number | undefined{
+        let right = this.right?.evaluate();
+        let left = this.left?.evaluate();
+        
+        return left! ** right!;
+    }
+    display(): string{
+        return "{" + this.left?.display() + " ^ " + this.right?.display() + "}";
+    }
+}
 export class NumberNode extends MyNode{
     priority = 69;
     val: number;
