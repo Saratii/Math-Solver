@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { DivisionNode, ExponentNode, MinusNode, ModulusNode, MultiplyNode, NegativeNode, NumberNode, ParenthesisNode, PlusNode } from './Nodes';
+import { DivisionNode, ExponentNode, MinusNode, ModulusNode, MultiplyNode, NegativeNode, NumberNode, ParenthesisNode, PlusNode, SinNode, UnclosedSinNode } from './Nodes';
 
 import { TokenService } from './token.service';
-import { DivisionToken, ExponentToken, LeftParenthesisToken, MinusToken, ModulusToken, MultiplyToken, NegativeToken, NumberToken, PlusToken, RightParenthesisToken } from './Tokens';
+import { DivisionToken, ExponentToken, LeftParenthesisToken, MinusToken, ModulusToken, MultiplyToken, NegativeToken, NumberToken, PlusToken, RightParenthesisToken, SinToken } from './Tokens';
 
 describe('TokenService', () => {
   let service: TokenService;
@@ -77,6 +77,13 @@ describe('TokenService', () => {
       // console.log("expctd:", expected);
       expect(actual).toEqual(expected);
     });
+    it("does sin(3+1)", () =>{
+      let actual = service.tokenize("sin(3+1)");
+      let expected = [new SinToken(), new NumberToken(3), new PlusToken(), new NumberToken(1), new RightParenthesisToken()];
+      // console.log("actual:", actual);
+      // console.log("expctd:", expected);
+      expect(actual).toEqual(expected);
+    });
   });
   describe("Lex", () => {
     it("builds addition tree", () => {
@@ -144,6 +151,13 @@ describe('TokenService', () => {
     it("does modulus", () => {
       let actual = service.lex([new NumberToken(2), new ModulusToken(), new NumberToken(1)]);
       let expected = new ModulusNode(new NumberNode(2), new NumberNode(1));
+      // console.log("actual:", actual.display());
+      // console.log("expected:", expected.display());
+      expect(actual).toEqual(expected);
+    });
+    it("builds tree for sin(3+1)", () => {
+      let actual = service.lex([new SinToken(), new NumberToken(3), new PlusToken(), new NumberToken(1), new RightParenthesisToken()]);
+      let expected = new SinNode(new PlusNode(new NumberNode(3), new NumberNode(1)));
       // console.log("actual:", actual.display());
       // console.log("expected:", expected.display());
       expect(actual).toEqual(expected);

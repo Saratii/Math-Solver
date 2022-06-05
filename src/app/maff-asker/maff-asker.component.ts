@@ -25,9 +25,10 @@ export class MaffAskerComponent implements OnInit {
     this.AST = this.tokenService.lex(this.tokens);
     console.log(this.AST);
     let temp = this.AST.evaluate();
-    this.value = Math.round(temp! * (10**16))/(10**16) + "";
-    if(this.value === "undefined"){
+    if(temp == undefined){
       this.value = "Learn how to type";
+    } else {
+      this.value = Math.round(temp! * (10**16))/(10**16) + "";
     }
   }
 }

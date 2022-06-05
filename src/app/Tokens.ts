@@ -65,3 +65,18 @@ export class ModulusToken extends Token{
         return "%"
     }
 }
+export class SinToken extends Token{
+    public toString(): string {
+        return "sin("
+    }
+}
+export class CosToken extends Token{
+    public toString(): string {
+        return "cos("
+    }
+}
+export class TanToken extends Token{
+    public toString(): string {
+        return "tan("
+    }
+}
