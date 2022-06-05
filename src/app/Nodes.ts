@@ -1,3 +1,5 @@
+import { single } from "rxjs";
+
 export abstract class MyNode{
     abstract evaluate(): number | undefined;
     abstract priority: number;
@@ -127,15 +129,6 @@ export class NegativeNode extends UnaryOperationNode{
         return "neg(" + this.child?.display() + ")";
     }
 }
-export class UnMatchedParenthesisNode extends MyNode{
-    priority: number = 68;
-    evaluate(): number | undefined {
-        return undefined;
-    }
-    display(): string {
-        return "(";
-    }
-}
 export class ParenthesisNode extends UnaryOperationNode{
     priority = 68;
     evaluate(): number | undefined{
@@ -152,5 +145,58 @@ export class ErrorNode extends MyNode{
     }
     display(): string{
         return "Error write it correctly";
+    }
+}
+export class SinNode extends UnaryOperationNode{
+    priority = 68;
+    evaluate(): number | undefined{
+        return Math.sin(this.child?.evaluate()!*Math.PI/180);
+    }
+    display(): string{
+        return "sin(" + this.child?.display() + ")";
+    }
+}
+export class CosNode extends UnaryOperationNode{
+    priority = 68;
+    evaluate(): number | undefined{
+        return Math.cos(this.child?.evaluate()!*Math.PI/180);
+    }
+    display(): string{
+        return "cos(" + this.child?.display() + ")";
+    }
+}
+export class TanNode extends UnaryOperationNode{
+    priority = 68;
+    evaluate(): number | undefined{
+        return Math.tan(this.child?.evaluate()!*Math.PI/180);
+    }
+    display(): string{
+        return "tan(" + this.child?.display() + ")";
+    }
+}
+export abstract class UnMatchedNode extends MyNode{
+    priority = 68;
+    evaluate(): number | undefined{
+        return undefined;
+    }
+}
+export class UnMatchedParenthesisNode extends UnMatchedNode{
+    display(): string {
+        return "(";
+    }
+}
+export class UnclosedSinNode extends UnMatchedNode{
+    display(): string{
+        return "sin(";
+    }
+}
+export class UnclosedCosNode extends UnMatchedNode{
+    display(): string{
+        return "cos(";
+    }
+}
+export class UnclosedTanNode extends UnMatchedNode{
+    display(): string{
+        return "tan(";
     }
 }

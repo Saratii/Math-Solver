@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BinaryOperationNode, DivisionNode, ErrorNode, ExponentNode, MinusNode, ModulusNode, MultiplyNode, MyNode, NegativeNode, NumberNode, ParenthesisNode, PlusNode, UnaryOperationNode, UnMatchedParenthesisNode } from './Nodes';
-import { DivisionToken, ExponentToken, LeftParenthesisToken, MinusToken, ModulusToken, MultiplyToken, NegativeToken, NumberToken, PlusToken, RightParenthesisToken, Token } from './Tokens';
+import { BinaryOperationNode, DivisionNode, ErrorNode, ExponentNode, MinusNode, ModulusNode, MultiplyNode, MyNode, NegativeNode, NumberNode, ParenthesisNode, PlusNode, SinNode, CosNode, TanNode, UnaryOperationNode, UnMatchedParenthesisNode, UnclosedSinNode, UnclosedCosNode, UnclosedTanNode, UnMatchedNode } from './Nodes';
+import { CosToken, DivisionToken, ExponentToken, LeftParenthesisToken, MinusToken, ModulusToken, MultiplyToken, NegativeToken, NumberToken, PlusToken, RightParenthesisToken, SinToken, TanToken, Token } from './Tokens';
 
 @Injectable({
   providedIn: 'root'
@@ -48,8 +48,17 @@ export class TokenService {
             } else if(/^\%/.test(s)){
                 tokenlist.push(new ModulusToken());
                 s = s.substring(1);
+            } else if(/^sin\(/.test(s)){
+                tokenlist.push(new SinToken())
+                s = s.substring(4);
+            } else if(/^cos\(/.test(s)){
+                tokenlist.push(new CosToken())
+                s = s.substring(4);
+            } else if(/^tan\(/.test(s)){
+                tokenlist.push(new TanToken())
+                s = s.substring(4);
             } else {
-                s = s.substring(1)
+                s = s.substring(1);
             }
             s = s.trim();
         } 
@@ -89,6 +98,15 @@ export class TokenService {
                     if(unMatchedParenthesisNode instanceof UnMatchedParenthesisNode){
                         let parenthesisNode = new ParenthesisNode(inbetweenNode);
                         this.combineNodes(unusedNodes, parenthesisNode);
+                    } else if(unMatchedParenthesisNode instanceof UnclosedSinNode) {
+                        let sinNode = new SinNode(inbetweenNode);
+                        this.combineNodes(unusedNodes, sinNode);
+                    } else if(unMatchedParenthesisNode instanceof UnclosedCosNode) {
+                        let cosNode = new CosNode(inbetweenNode);
+                        this.combineNodes(unusedNodes, cosNode);
+                    } else if(unMatchedParenthesisNode instanceof UnclosedTanNode) {
+                        let tanNode = new TanNode(inbetweenNode);
+                        this.combineNodes(unusedNodes, tanNode);
                     } else {
                         return new ErrorNode();
                     }
@@ -99,12 +117,23 @@ export class TokenService {
                 unusedNodes.push(new ExponentNode());
             } else if(token as any instanceof ModulusToken){
                 unusedNodes.push(new ModulusNode());
+            } else if(token as any instanceof SinToken){
+                unusedNodes.push(new UnclosedSinNode());
+            } else if(token as any instanceof CosToken){
+                unusedNodes.push(new UnclosedCosNode());
+            } else if(token as any instanceof TanToken){
+                unusedNodes.push(new UnclosedTanNode());
             }
         }
         if(unusedNodes.length != 1){
             return new ErrorNode();
+        } else {
+            let finalNode = unusedNodes.pop()!;
+            if(finalNode instanceof UnMatchedNode){
+                return new ErrorNode();
+            }
+            return finalNode;
         }
-        return unusedNodes.pop()!;
     }
 
     orderSwap(node:BinaryOperationNode){
@@ -149,7 +178,7 @@ export class TokenService {
                 topNode.right = latestNode;
                 unusedNodes.push(topNode);
             }
-        } else if(topNode instanceof UnMatchedParenthesisNode){
+        } else if(topNode instanceof UnMatchedParenthesisNode || topNode instanceof UnclosedSinNode || topNode instanceof UnclosedCosNode || topNode instanceof UnclosedTanNode){
             unusedNodes.push(topNode!);
             unusedNodes.push(latestNode);
         } else {
