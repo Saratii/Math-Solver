@@ -80,3 +80,18 @@ export class TanToken extends Token{
         return "tan("
     }
 }
+export class RSinToken extends Token{
+    public toString(): string {
+        return "rsin("
+    }
+}
+export class RCosToken extends Token{
+    public toString(): string {
+        return "rcos("
+    }
+}
+export class RTanToken extends Token{
+    public toString(): string {
+        return "rtan("
+    }
+}

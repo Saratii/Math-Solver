@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BinaryOperationNode, DivisionNode, ErrorNode, ExponentNode, MinusNode, ModulusNode, MultiplyNode, MyNode, NegativeNode, NumberNode, ParenthesisNode, PlusNode, SinNode, CosNode, TanNode, UnaryOperationNode, UnMatchedParenthesisNode, UnclosedSinNode, UnclosedCosNode, UnclosedTanNode, UnMatchedNode } from './Nodes';
-import { CosToken, DivisionToken, ExponentToken, LeftParenthesisToken, MinusToken, ModulusToken, MultiplyToken, NegativeToken, NumberToken, PlusToken, RightParenthesisToken, SinToken, TanToken, Token } from './Tokens';
+import { BinaryOperationNode, DivisionNode, ErrorNode, ExponentNode, MinusNode, ModulusNode, MultiplyNode, MyNode, NegativeNode, NumberNode, ParenthesisNode, PlusNode, SinNode, CosNode, TanNode, UnaryOperationNode, UnMatchedParenthesisNode, UnclosedSinNode, UnclosedCosNode, UnclosedTanNode, UnMatchedNode, UnclosedRSinNode, RSinNode, RTanNode, RCosNode, UnclosedRTanNode, UnclosedRCosNode } from './Nodes';
+import { CosToken, DivisionToken, ExponentToken, LeftParenthesisToken, MinusToken, ModulusToken, MultiplyToken, NegativeToken, NumberToken, PlusToken, RCosToken, RightParenthesisToken, RSinToken, RTanToken, SinToken, TanToken, Token } from './Tokens';
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +48,15 @@ export class TokenService {
             } else if(/^\%/.test(s)){
                 tokenlist.push(new ModulusToken());
                 s = s.substring(1);
+            } else if(/^rsin\(/.test(s)){
+                tokenlist.push(new RSinToken())
+                s = s.substring(5);
+            } else if(/^rcos\(/.test(s)){
+                tokenlist.push(new RCosToken())
+                s = s.substring(5);
+            } else if(/^rtan\(/.test(s)){
+                tokenlist.push(new RTanToken())
+                s = s.substring(5);
             } else if(/^sin\(/.test(s)){
                 tokenlist.push(new SinToken())
                 s = s.substring(4);
@@ -98,6 +107,15 @@ export class TokenService {
                     if(unMatchedParenthesisNode instanceof UnMatchedParenthesisNode){
                         let parenthesisNode = new ParenthesisNode(inbetweenNode);
                         this.combineNodes(unusedNodes, parenthesisNode);
+                    } else if(unMatchedParenthesisNode instanceof UnclosedRSinNode) {
+                        let rsinNode = new RSinNode(inbetweenNode);
+                        this.combineNodes(unusedNodes, rsinNode);
+                    } else if(unMatchedParenthesisNode instanceof UnclosedRCosNode) {
+                        let rcosNode = new RCosNode(inbetweenNode);
+                        this.combineNodes(unusedNodes, rcosNode);
+                    } else if(unMatchedParenthesisNode instanceof UnclosedRTanNode) {
+                        let rtanNode = new RTanNode(inbetweenNode);
+                        this.combineNodes(unusedNodes, rtanNode);
                     } else if(unMatchedParenthesisNode instanceof UnclosedSinNode) {
                         let sinNode = new SinNode(inbetweenNode);
                         this.combineNodes(unusedNodes, sinNode);
@@ -107,10 +125,13 @@ export class TokenService {
                     } else if(unMatchedParenthesisNode instanceof UnclosedTanNode) {
                         let tanNode = new TanNode(inbetweenNode);
                         this.combineNodes(unusedNodes, tanNode);
+                    
                     } else {
+                        
                         return new ErrorNode();
                     }
                 } else {
+                    //stop fucking triggering
                     return new ErrorNode();
                 }
             } else if(token as any instanceof ExponentToken){
@@ -123,6 +144,12 @@ export class TokenService {
                 unusedNodes.push(new UnclosedCosNode());
             } else if(token as any instanceof TanToken){
                 unusedNodes.push(new UnclosedTanNode());
+            } else if(token as any instanceof RSinToken){
+                unusedNodes.push(new UnclosedRSinNode());
+            } else if(token as any instanceof RCosToken){
+                unusedNodes.push(new UnclosedRCosNode());
+            } else if(token as any instanceof RTanToken){
+                unusedNodes.push(new UnclosedRTanNode());
             }
         }
         if(unusedNodes.length != 1){

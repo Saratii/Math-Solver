@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { DivisionNode, ExponentNode, MinusNode, ModulusNode, MultiplyNode, NegativeNode, NumberNode, ParenthesisNode, PlusNode, SinNode, UnclosedSinNode, UnMatchedParenthesisNode } from './Nodes';
+import { DivisionNode, ExponentNode, MinusNode, ModulusNode, MultiplyNode, NegativeNode, NumberNode, ParenthesisNode, PlusNode, RSinNode, SinNode, UnclosedSinNode, UnMatchedParenthesisNode } from './Nodes';
 
 import { TokenService } from './token.service';
-import { DivisionToken, ExponentToken, LeftParenthesisToken, MinusToken, ModulusToken, MultiplyToken, NegativeToken, NumberToken, PlusToken, RightParenthesisToken, SinToken } from './Tokens';
+import { DivisionToken, ExponentToken, LeftParenthesisToken, MinusToken, ModulusToken, MultiplyToken, NegativeToken, NumberToken, PlusToken, RightParenthesisToken, RSinToken, SinToken } from './Tokens';
 
 describe('TokenService', () => {
   let service: TokenService;
@@ -80,8 +80,15 @@ describe('TokenService', () => {
     it("does sin(90)", () =>{
       let actual = service.tokenize("sin(90)");
       let expected = [new SinToken(), new NumberToken(90), new RightParenthesisToken()];
-      console.log("actual:", actual);
-      console.log("expctd:", expected);
+      // console.log("actual:", actual);
+      // console.log("expctd:", expected);
+      expect(actual).toEqual(expected);
+    });
+    it("does rsin(2)", () =>{
+      let actual = service.tokenize("rsin(2)");
+      let expected = [new RSinToken(), new NumberToken(2), new RightParenthesisToken()];
+      // console.log("actual:", actual);
+      // console.log("expctd:", expected);
       expect(actual).toEqual(expected);
     });
   });
@@ -161,6 +168,13 @@ describe('TokenService', () => {
       // console.log("actual:", actual.display());
       // console.log("expected:", expected.display());
       expect(actual).toEqual(expected);
+    });
+    it("builds tree for rsin(2)", () => {
+      let actual = service.lex([new RSinToken(), new NumberToken(2), new RightParenthesisToken()]);
+      let expected = new RSinNode(new NumberNode(2));
+      console.log("actual:", actual.display());
+      console.log("expected:", expected.display());
+      expect(actual).toEqual(expected)
     });
   });
 });

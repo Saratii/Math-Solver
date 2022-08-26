@@ -174,6 +174,33 @@ export class TanNode extends UnaryOperationNode{
         return "tan(" + this.child?.display() + ")";
     }
 }
+export class RSinNode extends UnaryOperationNode{
+    priority = 68;
+    evaluate(): number | undefined{
+        return Math.sin(this.child?.evaluate()!);
+    }
+    display(): string{
+        return "rsin(" + this.child?.display() + ")";
+    }
+}
+export class RCosNode extends UnaryOperationNode{
+    priority = 68;
+    evaluate(): number | undefined{
+        return Math.cos(this.child?.evaluate()!);
+    }
+    display(): string{
+        return "rcos(" + this.child?.display() + ")";
+    }
+}
+export class RTanNode extends UnaryOperationNode{
+    priority = 68;
+    evaluate(): number | undefined{
+        return Math.tan(this.child?.evaluate()!);
+    }
+    display(): string{
+        return "rtan(" + this.child?.display() + ")";
+    }
+}
 export abstract class UnMatchedNode extends MyNode{
     priority = 68;
     evaluate(): number | undefined{
@@ -198,5 +225,20 @@ export class UnclosedCosNode extends UnMatchedNode{
 export class UnclosedTanNode extends UnMatchedNode{
     display(): string{
         return "tan(";
+    }
+}
+export class UnclosedRSinNode extends UnMatchedNode{
+    display(): string{
+        return "rsin(";
+    }
+}
+export class UnclosedRCosNode extends UnMatchedNode{
+    display(): string{
+        return "rcos(";
+    }
+}
+export class UnclosedRTanNode extends UnMatchedNode{
+    display(): string{
+        return "rtan(";
     }
 }

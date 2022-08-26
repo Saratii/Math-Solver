@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "MaffThingyWebsite": {
+    "MathSolver": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -69,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "MaffThingyWebsite:build:production"
+              "browserTarget": "MathSolver:build:production"
             },
             "development": {
-              "browserTarget": "MaffThingyWebsite:build:development"
+              "browserTarget": "MathSolver:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +80,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "MaffThingyWebsite:build"
+            "browserTarget": "MathSolver:build"
           }
         },
         "test": {
@@ -104,5 +104,8 @@
       }
     }
   },
-  "defaultProject": "MaffThingyWebsite"
+  "defaultProject": "MathSolver",
+  "cli": {
+    "analytics": "7ef87d05-cc60-46ba-9091-e80116ccef08"
+  }
 }
