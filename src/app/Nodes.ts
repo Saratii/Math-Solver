@@ -1,5 +1,3 @@
-import { single } from "rxjs";
-
 export abstract class MyNode{
     abstract evaluate(): number | undefined;
     abstract priority: number;

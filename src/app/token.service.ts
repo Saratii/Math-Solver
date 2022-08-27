@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BinaryOperationNode, DivisionNode, ErrorNode, ExponentNode, MinusNode, ModulusNode, MultiplyNode, MyNode, NegativeNode, NumberNode, ParenthesisNode, PlusNode, SinNode, CosNode, TanNode, UnaryOperationNode, UnMatchedParenthesisNode, UnclosedSinNode, UnclosedCosNode, UnclosedTanNode, UnMatchedNode, UnclosedRSinNode, RSinNode, RTanNode, RCosNode, UnclosedRTanNode, UnclosedRCosNode } from './Nodes';
+import { BinaryOperationNode, ErrorNode, MultiplyNode, MyNode, NumberNode, ParenthesisNode, SinNode, CosNode, TanNode, UnaryOperationNode, UnMatchedParenthesisNode, UnclosedSinNode, UnclosedCosNode, UnclosedTanNode, UnMatchedNode, UnclosedRSinNode, RSinNode, RTanNode, RCosNode, UnclosedRTanNode, UnclosedRCosNode } from './Nodes';
 import { CosToken, DivisionToken, ExponentToken, LeftParenthesisToken, MinusToken, ModulusToken, MultiplyToken, NegativeToken, NumberToken, PlusToken, RCosToken, RightParenthesisToken, RSinToken, RTanToken, SinToken, TanToken, Token } from './Tokens';
 
 @Injectable({
@@ -66,11 +66,22 @@ export class TokenService {
             } else if(/^tan\(/.test(s)){
                 tokenlist.push(new TanToken())
                 s = s.substring(4);
+            } else if(/^pi/.test(s)||/^PI/.test(s)){
+                tokenlist.push(new NumberToken(Math.PI))
+                s = s.substring(2);
+            } else if(/^e/.test(s)){
+                tokenlist.push(new NumberToken(Math.E));
+                s = s.substring(1);
             } else {
                 s = s.substring(1);
             }
             s = s.trim();
-        } 
+        }
+        for(let i = 1; i<tokenlist.length; i++) {
+            if(tokenlist[i] instanceof NumberToken && tokenlist[i-1] instanceof NumberToken){
+                tokenlist.splice(i, 0, new MultiplyToken());
+            }
+        }
         return tokenlist;
     }
 
@@ -79,16 +90,6 @@ export class TokenService {
         for(let token of tokens){
             if(token as any instanceof NumberToken){
                 this.combineNodes(unusedNodes, new NumberNode((token as NumberToken).val));
-            } else if(token as any instanceof MinusToken){
-                unusedNodes.push(new MinusNode());
-            } else if(token as any instanceof PlusToken){
-                unusedNodes.push(new PlusNode());
-            } else if(token as any instanceof MultiplyToken){
-                unusedNodes.push(new MultiplyNode());
-            } else if(token as any instanceof DivisionToken){
-                unusedNodes.push(new DivisionNode());
-            } else if(token as any instanceof NegativeToken){
-                unusedNodes.push(new NegativeNode());
             } else if(token as any instanceof LeftParenthesisToken){    
                 if(unusedNodes.length > 0){
                     let mostRecentNode: MyNode = unusedNodes.pop() as MyNode;
@@ -131,25 +132,10 @@ export class TokenService {
                         return new ErrorNode();
                     }
                 } else {
-                    //stop fucking triggering
                     return new ErrorNode();
                 }
-            } else if(token as any instanceof ExponentToken){
-                unusedNodes.push(new ExponentNode());
-            } else if(token as any instanceof ModulusToken){
-                unusedNodes.push(new ModulusNode());
-            } else if(token as any instanceof SinToken){
-                unusedNodes.push(new UnclosedSinNode());
-            } else if(token as any instanceof CosToken){
-                unusedNodes.push(new UnclosedCosNode());
-            } else if(token as any instanceof TanToken){
-                unusedNodes.push(new UnclosedTanNode());
-            } else if(token as any instanceof RSinToken){
-                unusedNodes.push(new UnclosedRSinNode());
-            } else if(token as any instanceof RCosToken){
-                unusedNodes.push(new UnclosedRCosNode());
-            } else if(token as any instanceof RTanToken){
-                unusedNodes.push(new UnclosedRTanNode());
+            } else {
+                unusedNodes.push(token.toNode());
             }
         }
         if(unusedNodes.length != 1){
@@ -205,9 +191,11 @@ export class TokenService {
                 topNode.right = latestNode;
                 unusedNodes.push(topNode);
             }
-        } else if(topNode instanceof UnMatchedParenthesisNode || topNode instanceof UnclosedSinNode || topNode instanceof UnclosedCosNode || topNode instanceof UnclosedTanNode){
+        } else if(topNode instanceof UnMatchedNode){
             unusedNodes.push(topNode!);
             unusedNodes.push(latestNode);
+        } else if(topNode instanceof NumberNode){
+            unusedNodes.push(new MultiplyNode(topNode, latestNode));
         } else {
             unusedNodes = [new ErrorNode()];
         }

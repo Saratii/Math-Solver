@@ -91,6 +91,13 @@ describe('TokenService', () => {
       // console.log("expctd:", expected);
       expect(actual).toEqual(expected);
     });
+    it("does 2PI2PI", () =>{
+      let actual = service.tokenize("2PI2PI");
+      let expected = [new NumberToken(2), new MultiplyToken(), new NumberToken(Math.PI), new MultiplyToken(), new NumberToken(2), new MultiplyToken(), new NumberToken(Math.PI)];
+      // console.log("actual:", actual);
+      // console.log("expctd:", expected);
+      expect(actual).toEqual(expected);
+    });
   });
   describe("Lex", () => {
     it("builds addition tree", () => {
@@ -172,6 +179,13 @@ describe('TokenService', () => {
     it("builds tree for rsin(2)", () => {
       let actual = service.lex([new RSinToken(), new NumberToken(2), new RightParenthesisToken()]);
       let expected = new RSinNode(new NumberNode(2));
+      // console.log("actual:", actual.display());
+      // console.log("expected:", expected.display());
+      expect(actual).toEqual(expected);
+    });
+    it("builds tree for 2PI2PI", () => {
+      let actual = service.lex([new NumberToken(2), new MultiplyToken(), new NumberToken(Math.PI), new MultiplyToken(), new NumberToken(2), new MultiplyToken(), new NumberToken(Math.PI)]);
+      let expected = new MultiplyNode(new MultiplyNode(new MultiplyNode(new NumberNode(2), new NumberNode(Math.PI)), new NumberNode(2)), new NumberNode(Math.PI));
       console.log("actual:", actual.display());
       console.log("expected:", expected.display());
       expect(actual).toEqual(expected)
